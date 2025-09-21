@@ -148,6 +148,53 @@
     a#ao {
       color: blue;
     }
+    
+ /* メニューボタン初期非表示 */
+#menu-toggle {
+  display: none;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  color: #00eaff;
+  cursor: pointer;
+}
+
+/* 縦画面用 */
+@media screen and (orientation: portrait) {
+  nav#nav-menu {
+    display: none; /* 最初は非表示 */
+    flex-direction: column;
+    width: 100%;
+    background: rgba(0,0,0,0.85);
+    position: absolute;
+    top: 60px;
+    left: 0;
+    padding: 1rem 0;
+    border-radius: 0 0 12px 12px;
+  }
+  nav#nav-menu ul {
+    flex-direction: column;
+    padding-left: 0;
+  }
+  nav#nav-menu li {
+    margin: 0.5rem 0;
+    text-align: center;
+  }
+  #menu-toggle {
+    display: block; /* 縦画面だけボタン表示 */
+  }
+}
+
+/* 横画面では従来通り表示 */
+@media screen and (orientation: landscape) {
+  nav#nav-menu {
+    display: flex !important;
+  }
+  #menu-toggle {
+    display: none;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -160,18 +207,20 @@
   <canvas id="matrix"></canvas>
 
   <header>
-    <div class="logo">情報電子工学科</div>
-    <nav>
-      <ul>
-        <li><a onclick="showPage('home')">ホーム</a></li>
-        <li><a onclick="showPage('nyuugakukibou')">入学希望の方</a></li>
-        <li><a onclick="showPage('oozikougyou')">王寺工業とは</a></li>
-        <li><a onclick="showPage('zyouhoudensikoubakuka')">情報電子工学科とは</a></li>
-        <li><a onclick="showPage('sikaku')">資格</a></li>
-        <li><a onclick="showPage('akusesu')">アクセス</a></li>
-      </ul>
-    </nav>
-  </header>
+  <div class="logo">情報電子工学科</div>
+  <button id="menu-toggle">☰</button> <!-- メニューボタン -->
+  <nav id="nav-menu">
+    <ul>
+      <li><a onclick="showPage('home')">ホーム</a></li>
+      <li><a onclick="showPage('nyuugakukibou')">入学希望の方</a></li>
+      <li><a onclick="showPage('oozikougyou')">王寺工業とは</a></li>
+      <li><a onclick="showPage('zyouhoudensikoubakuka')">情報電子工学科とは</a></li>
+      <li><a onclick="showPage('sikaku')">資格</a></li>
+      <li><a onclick="showPage('akusesu')">アクセス</a></li>
+    </ul>
+  </nav>
+</header>
+
 
   <section class="hero">
     <h1>ようこそ 情報電子工学科 へ</h1>
@@ -220,7 +269,25 @@
       setTimeout(() => loader.classList.add("hidden"), 1500);
       showPage("home");
     });
+    const menuToggle = document.getElementById('menu-toggle');
+  const navMenu = document.getElementById('nav-menu');
 
+  menuToggle.addEventListener('click', () => {
+    if(navMenu.style.display === 'flex'){
+      navMenu.style.display = 'none';
+    } else {
+      navMenu.style.display = 'flex';
+    }
+  });
+
+  // 画面回転時にメニューを自動調整
+  window.addEventListener('resize', () => {
+    if(window.innerWidth > window.innerHeight){
+      navMenu.style.display = 'flex'; // 横画面なら表示
+    } else {
+      navMenu.style.display = 'none'; // 縦画面なら非表示
+    }
+  });
     // ===== ページ切替 =====
     function showPage(page){
       const content = document.getElementById("page-content");
